@@ -2,6 +2,13 @@ package net.landofrails.MessageAPI.api;
 
 import java.util.Optional;
 
+/**
+ * 
+ * Contains almost every minecraft language.
+ * 
+ * @author Daniel
+ *
+ */
 public enum ELanguage {
 
 	// @formatter:off
@@ -133,8 +140,9 @@ public enum ELanguage {
 	CHINESE_SIMPLIFIED("简体中文 (中国) (Jiǎntǐ Zhōngwén (Zhōngguó))", "zh_cn"),
 	CHINESE_TRADITIONAL_HONGKONG("繁體中文 (香港) (Fántǐ Zhōngwén (Xiānggǎng))", "zh_hk"),
 	CHINESE_TRADITIONAL_TAIWAN("繁體中文 (台灣) (Fántǐ Zhōngwén (Táiwān))", "zh_tw");
+			
 	// @formatter:on
-	
+
 	private String name;
 	private String locale;
 	

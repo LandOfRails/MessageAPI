@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import net.landofrails.MessageAPI.api.ELanguage;
 import net.landofrails.MessageAPI.api.MessageAPI;
+import net.landofrails.MessageAPI.plugin.utils.MessageAPIPluginUtils;
 
 public class MessageAPIPlugin extends JavaPlugin {
 
@@ -39,6 +40,7 @@ public class MessageAPIPlugin extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		messageAPI.sendToConsole(MessageAPIMessages.REGISTER_COMMAND_START);
 		try {
 			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
 
@@ -48,11 +50,13 @@ public class MessageAPIPlugin extends JavaPlugin {
 			commandMap.register("lang", new BukkitCommand("lang") {
 				@Override
 				public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-					if (sender instanceof Player) {
-						sender.sendMessage("PlayerLang: " + MessageAPI.getLanguage((Player) sender));
-						sender.sendMessage("ServerLang: " + getServerLanguage().getName());
-					} else {
-						System.out.println("Du bist kein Spieler!");
+					ELanguage lang = MessageAPI.serverLanguage();
+					messageAPI.sendTo(sender, MessageAPIMessages.LANGUAGE_SERVER, lang.getName(), lang.getLocale());
+
+					for (Player p : Bukkit.getOnlinePlayers()) {
+						ELanguage playerLang = MessageAPI.getLanguage(p);
+						messageAPI.sendTo(sender, MessageAPIMessages.LANGUAGE_PLAYER, p.getName(), playerLang.getName(),
+								playerLang.getLocale());
 					}
 					return true;
 				}
@@ -62,11 +66,14 @@ public class MessageAPIPlugin extends JavaPlugin {
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			e.printStackTrace();
 		}
+		messageAPI.sendToConsole(MessageAPIMessages.REGISTER_COMMAND_END);
 	}
 
 	@Override
 	public void onDisable() {
-
+		MessageAPIPluginUtils.unRegisterBukkitCommand(this, Bukkit.getPluginCommand("lang"));
+		messageAPI.sendToConsole(MessageAPIMessages.DISABLING_PLUGIN);
+		messageAPI = null;
 	}
 
 	private void checkConfig() {
